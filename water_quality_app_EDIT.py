@@ -6,7 +6,6 @@ import os
 from folium.plugins import FloatImage
 
 # عنوان اپلیکیشن
-st.set_page_config(page_title='Texas Coastal Hydrologic Monitoring Project', layout='wide')
 st.title("Texas Coastal Hydrologic Monitoring Project")
 
 # مسیر فایل shapefile
@@ -46,10 +45,10 @@ if os.path.exists(shapefile_path):
     # افزودن لوگوی محلی Meadows Center
     logo_path = "meadows-logo.png"
     if os.path.exists(logo_path):
-        FloatImage(logo_path, bottom=5, left=5).add_to(m)
+        logo_html = f'<img src="data:image/png;base64,{open(logo_path, "rb").read().encode("base64").decode()}" style="position:fixed; bottom:10px; left:10px; width:150px;">'
+        m.get_root().html.add_child(folium.Element(logo_html))
 
     # نمایش نقشه به صورت تمام صفحه
-    st.markdown("<style>div.st_folium {height: 95vh !important; width: 100vw !important;}</style>", unsafe_allow_html=True)
-    st_folium(m, width=1600, height=1000)
+    st_folium(m, width=1200, height=800)
 else:
     st.error("⚠️ فایل Shapefile یافت نشد. لطفاً مسیر صحیح را وارد کنید.")
