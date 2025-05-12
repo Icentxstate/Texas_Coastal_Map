@@ -1,49 +1,56 @@
+import streamlit as st
 import geopandas as gpd
 import folium
+from streamlit_folium import st_folium
 import os
-from folium.plugins import FloatImage
 
-# Path to the shapefile
-shapefile_path = r"CZB.shp"
-gdf = gpd.read_file(shapefile_path)
+# عنوان صفحه و توضیحات پروژه
+st.set_page_config(page_title='Texas Coastal Hydrologic Monitoring Project')
+st.title('Texas Coastal Hydrologic Monitoring Project')
+st.markdown("""
+### Why this project?
+Texas lacks long-term, consistent hydrologic data across its coast. This project addresses that gap through collaboration and innovation.
 
-# Reproject to EPSG:4326 if needed
-if gdf.crs.to_string() != 'EPSG:4326':
-    gdf = gdf.to_crs(epsg=4326)
+### Purpose
+Develop a stakeholder-driven, long-term coastal hydrologic monitoring plan (LTCHMP).
 
-# Output directory and file
-output_dir = os.path.dirname(shapefile_path)
-output_file = os.path.join(output_dir, "Texas_Coastal_Interactive_Map.html")
+### Goal
+Create sustainable, data-informed tools for decision-making, planning, and resilience.
+""")
 
-# Map center based on the shapefile's centroid
-center = gdf.geometry.centroid.iloc[0]
-m = folium.Map(location=[center.y, center.x], zoom_start=7, tiles="CartoDB positron")
+# بارگذاری فایل shapefile
+shapefile_path = st.text_input("Enter the path to your Shapefile:", value="C:\\Users\\qrb31\\Downloads\\New folder\\CZB.shp")
 
-# Styled Popup with Project Information
-popup_html = """
-<div style='font-family: Arial, sans-serif; font-size: 14px;'>
-  <h4>Texas Coastal Hydrologic Monitoring Project</h4>
-  <p><strong>Project Overview:</strong> Texas lacks long-term, consistent hydrologic data across its coast.</p>
-  <p><strong>Purpose:</strong> To develop a stakeholder-driven, long-term coastal hydrologic monitoring plan (LTCHMP).</p>
-  <p><strong>Goal:</strong> To create sustainable, data-informed tools for decision-making, planning, and resilience.</p>
-</div>
-"""
+if os.path.exists(shapefile_path):
+    gdf = gpd.read_file(shapefile_path).to_crs(epsg=4326)
 
-# Adding the project area with a Popup
-folium.GeoJson(
-    gdf,
-    style_function=lambda x: {
-        "fillColor": "#0b5394",
-        "color": "#0b5394",
-        "weight": 2,
-        "fillOpacity": 0.4,
-    },
-    popup=folium.Popup(popup_html, max_width=450)
-).add_to(m)
+    # ایجاد نقشه
+    center = gdf.geometry.centroid.iloc[0]
+    m = folium.Map(location=[center.y, center.x], zoom_start=7, tiles="CartoDB positron")
 
-# Adding the logo (must be in the same directory as the output file)
-logo_path = os.path.join(output_dir, "meadows-vertical-txstate-blue-gold.png")
-if os.path.exists(logo_path):
-    FloatImage(logo_path, bottom=5, left=5).add_to(m)
+    # افزودن منطقه پروژه با Popup
+    popup_html = """
+    <div style='font-family: "Segoe UI", sans-serif; font-size: 14px; line-height: 1.6;'>
+      <h4 style='margin-bottom: 5px;'>Texas Coastal Hydrologic Monitoring Project</h4>
+      <p><strong style='color:#0b5394;'>Why this project?</strong><br>
+      Texas lacks long-term, consistent hydrologic data across its coast.</p>
+      <p><strong>Purpose:</strong> Develop a stakeholder-driven, long-term coastal hydrologic monitoring plan (LTCHMP).</p>
+      <p><strong>Goal:</strong> Create sustainable, data-informed tools for decision-making, planning, and resilience.</p>
+    </div>
+    """
+
+    folium.GeoJson(
+        gdf,
+        style_function=lambda x: {
+            "fillColor": "#0b5394",
+            "color": "#0b5394",
+            "weight": 2,
+            "fillOpacity": 0.4,
+        },
+        popup=folium.Popup(popup_html, max_width=450)
+    ).add_to(m)
+
+    # نمایش نقشه
+    st_folium(m, width=800, height=500)
 else:
-    print("⚠️ Logo file not found at the expected path:", logo_path)
+    st.error("⚠️ فایل Shapefile یافت نشد. لطفاً مسیر صحیح را وارد کنید.")
