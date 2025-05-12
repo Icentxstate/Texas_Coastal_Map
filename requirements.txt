@@ -7,3 +7,4 @@ pyproj
 rtree
 folium
 streamlit
+streamlit_folium
