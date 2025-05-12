@@ -20,38 +20,36 @@ if os.path.exists(shapefile_path):
     center = gdf.geometry.centroid.iloc[0]
     m = folium.Map(location=[center.y, center.x], zoom_start=7, tiles="CartoDB positron")
 
-    # افزودن منطقه پروژه با Popup
-    for _, row in gdf.iterrows():
-        folium.GeoJson(
-            row.geometry,
-            style_function=lambda x: {
-                "fillColor": "#0b5394",
-                "color": "#0b5394",
-                "weight": 2,
-                "fillOpacity": 0.4,
-            },
-            popup=folium.Popup(f"""
-                <div style='font-family: Segoe UI, sans-serif; font-size: 14px; line-height: 1.6;'>
-                  <h4>Texas Coastal Hydrologic Monitoring Project</h4>
-                  <p><strong>Purpose:</strong> Develop a stakeholder-driven, long-term coastal hydrologic monitoring plan (LTCHMP).</p>
-                  <p><strong>Goal:</strong> Create sustainable, data-informed tools for decision-making, planning, and resilience.</p>
-                </div>
-            """, max_width=450)
-        ).add_to(m)
+    # Popup با استایل سایت‌پسند
+    popup_html = '''
+    <div style="font-family: 'Segoe UI', sans-serif; font-size: 14px; line-height: 1.6;">
+      <h4 style="margin-bottom: 5px;">Texas Coastal Hydrologic Monitoring Project</h4>
+      <p><strong style="color:#0b5394;">Why this project?</strong><br>
+      Texas lacks long-term, consistent hydrologic data across its coast. This project addresses that gap through collaboration and innovation.</p>
+      <p><strong>Purpose:</strong> Develop a stakeholder-driven, long-term coastal hydrologic monitoring plan (LTCHMP).</p>
+      <p><strong>Goal:</strong> Create sustainable, data-informed tools for decision-making, planning, and resilience.</p>
+    </div>
+    '''
 
-    # افزودن لوگوی Meadows Center به صورت Overlay
+    # افزودن منطقه پروژه با Popup
+    folium.GeoJson(
+        gdf,
+        style_function=lambda x: {
+            "fillColor": "#0b5394",
+            "color": "#0b5394",
+            "weight": 2,
+            "fillOpacity": 0.4,
+        },
+        popup=folium.Popup(popup_html, max_width=450)
+    ).add_to(m)
+
+    # افزودن لوگوی محلی Meadows Center
     logo_path = "meadows-logo.png"
     if os.path.exists(logo_path):
-        image_overlay = folium.raster_layers.ImageOverlay(
-            name='Meadows Center Logo',
-            image=logo_path,
-            bounds=[[center.y - 0.1, center.x - 0.1], [center.y + 0.1, center.x + 0.1]],
-            opacity=0.8
-        )
-        image_overlay.add_to(m)
+        FloatImage(logo_path, bottom=5, left=5).add_to(m)
 
     # نمایش نقشه به صورت تمام صفحه
     st.markdown("<style>div.st_folium {height: 95vh !important; width: 100vw !important;}</style>", unsafe_allow_html=True)
-    st_folium(m, width=1500, height=900)
+    st_folium(m, width=1600, height=1000)
 else:
     st.error("⚠️ فایل Shapefile یافت نشد. لطفاً مسیر صحیح را وارد کنید.")
