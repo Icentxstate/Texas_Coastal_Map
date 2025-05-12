@@ -21,14 +21,14 @@ if os.path.exists(shapefile_path):
 
     # Popup با استایل سایت‌پسند
     popup_html = '''
-<div style="font-family: 'Segoe UI', sans-serif; font-size: 14px; line-height: 1.6;">
-  <h4 style="margin-bottom: 5px;">Texas Coastal Hydrologic Monitoring Project</h4>
-  <p><strong style="color:#0b5394;">Why this project?</strong><br>
-  Texas lacks long-term, consistent hydrologic data across its coast. This project addresses that gap through collaboration and innovation.</p>
-  <p><strong>Purpose:</strong> Develop a stakeholder-driven, long-term coastal hydrologic monitoring plan (LTCHMP).</p>
-  <p><strong>Goal:</strong> Create sustainable, data-informed tools for decision-making, planning, and resilience.</p>
-</div>
-"""
+    <div style="font-family: 'Segoe UI', sans-serif; font-size: 14px; line-height: 1.6;">
+      <h4 style="margin-bottom: 5px;">Texas Coastal Hydrologic Monitoring Project</h4>
+      <p><strong style="color:#0b5394;">Why this project?</strong><br>
+      Texas lacks long-term, consistent hydrologic data across its coast. This project addresses that gap through collaboration and innovation.</p>
+      <p><strong>Purpose:</strong> Develop a stakeholder-driven, long-term coastal hydrologic monitoring plan (LTCHMP).</p>
+      <p><strong>Goal:</strong> Create sustainable, data-informed tools for decision-making, planning, and resilience.</p>
+    </div>
+    '''
 
     # افزودن منطقه پروژه با Popup
     folium.GeoJson(
