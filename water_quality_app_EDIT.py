@@ -50,6 +50,6 @@ if os.path.exists(shapefile_path):
 
     # نمایش نقشه به صورت تمام صفحه
     st.markdown("<style>div.st_folium {height: 95vh !important; width: 100vw !important;}</style>", unsafe_allow_html=True)
-    st_folium(m, width=1500, height=900)
+    st_folium(m, width=1600, height=1000)
 else:
     st.error("⚠️ فایل Shapefile یافت نشد. لطفاً مسیر صحیح را وارد کنید.")
