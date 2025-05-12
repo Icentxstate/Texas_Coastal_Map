@@ -43,9 +43,10 @@ if os.path.exists(shapefile_path):
     ).add_to(m)
 
 # افزودن لوگوی Meadows Center
-    logo_url = "meadows-vertical-txstate-blue-gold.png"
-    logo_html = f'<img src="{logo_url}" style="position:fixed; bottom:10px; left:10px; width:150px;">'
-    m.get_root().html.add_child(folium.Element(logo_html))
+   logo_path = "meadows-vertical-txstate-blue-gold.png"
+    if os.path.exists(logo_path):
+        logo_html = f'<img src="data:image/png;base64,{open(logo_path, "rb").read().encode("base64").decode()}" style="position:fixed; bottom:10px; left:10px; width:150px;">'
+        m.get_root().html.add_child(folium.Element(logo_html))
 
     # نمایش نقشه به صورت تمام صفحه
     st_folium(m, width=1200, height=800)
