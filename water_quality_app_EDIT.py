@@ -42,8 +42,12 @@ if os.path.exists(shapefile_path):
         popup=folium.Popup(popup_html, max_width=450)
     ).add_to(m)
 
-    # نمایش نقشه
-    st_folium(m, width=800, height=500)
+# افزودن لوگوی Meadows Center
+    logo_url = "meadows-vertical-txstate-blue-gold.png"
+    logo_html = f'<img src="{logo_url}" style="position:fixed; bottom:10px; left:10px; width:150px;">'
+    m.get_root().html.add_child(folium.Element(logo_html))
 
+    # نمایش نقشه به صورت تمام صفحه
+    st_folium(m, width=1200, height=800)
 else:
-    st.error("Shapefile path is incorrect. Please enter a valid path.")
+    st.error("⚠️ فایل Shapefile یافت نشد. لطفاً مسیر صحیح را وارد کنید.")
