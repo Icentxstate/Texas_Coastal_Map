@@ -9,7 +9,7 @@ from folium.plugins import FloatImage
 st.title("Texas Coastal Hydrologic Monitoring Project")
 
 # مسیر فایل shapefile
-shapefile_path = st.text_input("Enter Shapefile Path:", "C:/Users/qrb31/Downloads/New folder/CZB.shp")
+shapefile_path = st.text_input("Enter Shapefile Path:", "CZB.shp")
 
 # بررسی وجود فایل shapefile
 if os.path.exists(shapefile_path):
