@@ -19,7 +19,7 @@ Create sustainable, data-informed tools for decision-making, planning, and resil
 """)
 
 # بارگذاری فایل shapefile
-shapefile_path = st.text_input("Enter the path to your Shapefile:", value="C:\\Users\\qrb31\\Downloads\\New folder\\CZB.shp")
+shapefile_path = st.text_input("Enter the path to your Shapefile:", value="CZB.shp")
 
 if os.path.exists(shapefile_path):
     gdf = gpd.read_file(shapefile_path).to_crs(epsg=4326)
