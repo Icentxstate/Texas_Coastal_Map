@@ -8,3 +8,7 @@ rtree
 folium
 streamlit
 streamlit_folium
+streamlit
+streamlit-folium
+geopandas
+folium
