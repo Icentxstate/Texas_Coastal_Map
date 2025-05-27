@@ -3,13 +3,13 @@ import geopandas as gpd
 import folium
 from streamlit_folium import st_folium
 import os
-from folium.plugins import FloatImage
 import base64
+from folium.plugins import FloatImage
 
-# تنظیمات اولیه Streamlit
-st.set_page_config(layout="wide")  # حالت عریض
+# پیکربندی صفحه به حالت عریض
+st.set_page_config(layout="wide")
 
-# حذف حاشیه‌ها و فضای اضافی
+# حذف padding اضافی
 st.markdown("""
     <style>
         .block-container {
@@ -21,18 +21,21 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# مسیر فایل shapefile
+# عنوان اپلیکیشن
+st.title("Texas Coastal Hydrologic Monitoring Project")
+
+# وارد کردن مسیر فایل Shapefile
 shapefile_path = st.text_input("Enter Shapefile Path:", "CZB.shp")
 
-# بررسی وجود فایل shapefile
+# بررسی وجود فایل
 if os.path.exists(shapefile_path):
     gdf = gpd.read_file(shapefile_path).to_crs(epsg=4326)
 
-    # مرکز نقشه
+    # مرکز نقشه بر اساس هندسه منطقه
     center = gdf.geometry.centroid.iloc[0]
     m = folium.Map(location=[center.y, center.x], zoom_start=7, tiles="CartoDB positron")
 
-    # Popup
+    # محتوای Popup
     popup_html = '''
     <div style="font-family: 'Segoe UI', sans-serif; font-size: 14px; line-height: 1.6;">
       <h4 style="margin-bottom: 5px;">Texas Coastal Hydrologic Monitoring Project</h4>
@@ -43,7 +46,7 @@ if os.path.exists(shapefile_path):
     </div>
     '''
 
-    # افزودن منطقه پروژه
+    # اضافه کردن ناحیه shapefile
     folium.GeoJson(
         gdf,
         style_function=lambda x: {
@@ -55,18 +58,20 @@ if os.path.exists(shapefile_path):
         popup=folium.Popup(popup_html, max_width=450)
     ).add_to(m)
 
-    # افزودن لوگو
-    logo_path = "meadows-logo.png"
+    # اضافه کردن لوگوی Meadows Center
+    logo_path = "meadows-logo.png"  # مطمئن شو این فایل کنار app هست
     if os.path.exists(logo_path):
-        with open(logo_path, "rb") as f:
-            logo_base64 = base64.b64encode(f.read()).decode("utf-8")
+        with open(logo_path, "rb") as image_file:
+            encoded_logo = base64.b64encode(image_file.read()).decode("utf-8")
+
         logo_html = f'''
-        <img src="data:image/png;base64,{logo_base64}" 
-             style="position: fixed; bottom: 10px; left: 10px; width: 120px; z-index: 1000;">
+        <div style="position: fixed; bottom: 10px; left: 10px; z-index: 1000;">
+            <img src="data:image/png;base64,{encoded_logo}" style="width: 140px; opacity: 0.9;">
+        </div>
         '''
         m.get_root().html.add_child(folium.Element(logo_html))
 
-    # نقشه تمام‌صفحه
+    # نمایش نقشه
     st_folium(m, use_container_width=True, height=900)
 
 else:
