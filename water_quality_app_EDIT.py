@@ -4,9 +4,22 @@ import folium
 from streamlit_folium import st_folium
 import os
 from folium.plugins import FloatImage
+import base64
 
-# عنوان اپلیکیشن
-st.title("Texas Coastal Hydrologic Monitoring Project")
+# تنظیمات اولیه Streamlit
+st.set_page_config(layout="wide")  # حالت عریض
+
+# حذف حاشیه‌ها و فضای اضافی
+st.markdown("""
+    <style>
+        .block-container {
+            padding: 0 !important;
+        }
+        .main {
+            padding: 0 !important;
+        }
+    </style>
+""", unsafe_allow_html=True)
 
 # مسیر فایل shapefile
 shapefile_path = st.text_input("Enter Shapefile Path:", "CZB.shp")
@@ -19,7 +32,7 @@ if os.path.exists(shapefile_path):
     center = gdf.geometry.centroid.iloc[0]
     m = folium.Map(location=[center.y, center.x], zoom_start=7, tiles="CartoDB positron")
 
-    # Popup با استایل سایت‌پسند
+    # Popup
     popup_html = '''
     <div style="font-family: 'Segoe UI', sans-serif; font-size: 14px; line-height: 1.6;">
       <h4 style="margin-bottom: 5px;">Texas Coastal Hydrologic Monitoring Project</h4>
@@ -30,7 +43,7 @@ if os.path.exists(shapefile_path):
     </div>
     '''
 
-    # افزودن منطقه پروژه با Popup
+    # افزودن منطقه پروژه
     folium.GeoJson(
         gdf,
         style_function=lambda x: {
@@ -42,13 +55,19 @@ if os.path.exists(shapefile_path):
         popup=folium.Popup(popup_html, max_width=450)
     ).add_to(m)
 
-    # افزودن لوگوی محلی Meadows Center
+    # افزودن لوگو
     logo_path = "meadows-logo.png"
     if os.path.exists(logo_path):
-        logo_html = f'<img src="data:image/png;base64,{open(logo_path, "rb").read().encode("base64").decode()}" style="position:fixed; bottom:10px; left:10px; width:150px;">'
+        with open(logo_path, "rb") as f:
+            logo_base64 = base64.b64encode(f.read()).decode("utf-8")
+        logo_html = f'''
+        <img src="data:image/png;base64,{logo_base64}" 
+             style="position: fixed; bottom: 10px; left: 10px; width: 120px; z-index: 1000;">
+        '''
         m.get_root().html.add_child(folium.Element(logo_html))
 
-    # نمایش نقشه به صورت تمام صفحه
-    st_folium(m, width=1200, height=800)
+    # نقشه تمام‌صفحه
+    st_folium(m, use_container_width=True, height=900)
+
 else:
     st.error("⚠️ فایل Shapefile یافت نشد. لطفاً مسیر صحیح را وارد کنید.")
